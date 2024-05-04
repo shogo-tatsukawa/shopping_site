@@ -1,15 +1,15 @@
 package com.example.demo.dto;
 
-import java.time.LocalDateTime;
-
 import lombok.Data;
+
 /**
  *
  * @author S.Tatsukawa
- * 商品情報のDTOモデル
+ * 商品情報のFormモデル
+ *
  */
 @Data
-public class ItemDto {
+public class ItemForm {
     /**
      * ID
      */
@@ -25,13 +25,4 @@ public class ItemDto {
      */
     private String description;
 
-    /**
-     * 登録日時
-     */
-    private LocalDateTime createdAt;
-
-    /**
-     * 更新日時
-     */
-    private LocalDateTime updatedAt;
 }

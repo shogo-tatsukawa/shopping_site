@@ -7,6 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -36,7 +37,8 @@ public class Item {
     /**
      * 商品説明
      */
-    @Column(name = "description")
+    @Lob
+    @Column(name = "description", nullable = false)
     private String description;
 
     /**

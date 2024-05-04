@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>商品情報の新規登録ページ</title>
+</head>
+<body>
+    <form method="post" th:action="@{/item/create}" th:object="${itemForm}">
+        <hr>
+        <label>商品名</label><br />
+        <input type="text" th:field="*{name}" />
+        <br />
+        <label>商品説明</label><br />
+        <textarea rows="10" cols="50" th:field="*{description}"></textarea>
+        <br /><br />
+        <button type="submit">登録</button>
+    </form>
+
+    <p><a th:href="@{/item/index}">一覧に戻る</a></p>
+</body>
+</html>

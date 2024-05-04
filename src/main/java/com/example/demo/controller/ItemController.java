@@ -1,16 +1,16 @@
 package com.example.demo.controller;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.example.demo.dto.ItemConverter;
 import com.example.demo.dto.ItemDto;
+import com.example.demo.dto.ItemForm;
 import com.example.demo.entity.Item;
 import com.example.demo.service.ItemService;
 /**
@@ -28,23 +28,45 @@ public class ItemController {
     ItemService itemService;
 
     /**
+     * 商品情報 Converter
+     */
+    @Autowired
+    ItemConverter itemConverter;
+
+    /**
      * 商品情報一覧画面を表示
      * @param model Model
      * @return 商品情報の一覧画面のHTML
      */
     @RequestMapping(value = "/item/index", method = RequestMethod.GET)
     public String index(Model model) {
-        List<Item> items = itemService.serchAll();
+        List<Item> items = itemService.searchAll();
 
-        ModelMapper modelMapper = new ModelMapper();
-
-        List<ItemDto> itemsDto = items
-                .stream()
-                .map(item -> modelMapper.map(item, ItemDto.class))
-                .collect(Collectors.toList());
+        List<ItemDto> itemsDto = itemConverter.toDtoList(items);
 
         model.addAttribute("items", itemsDto);
 
         return "item/index";
+    }
+
+    /**
+     * 新規登録画面を表示する
+     */
+    @RequestMapping(value = "/item/new", method = RequestMethod.GET)
+    public String entryNew(Model model) {
+        //ItemDto itemDto = new ItemDto();
+        model.addAttribute("itemForm", new ItemForm());
+
+        return "item/new";
+    }
+
+    /**
+     * 商品情報を新規登録する
+     */
+    @RequestMapping(value = "/item/create", method = RequestMethod.POST)
+    public String create(ItemForm itemForm, Model model) {
+        Item item = itemConverter.toItem(itemForm);
+        itemService.insertItem(item);
+        return index(model);
     }
 }
