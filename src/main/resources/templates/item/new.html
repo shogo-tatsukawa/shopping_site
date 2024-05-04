@@ -10,6 +10,7 @@
         <label>商品名</label><br />
         <input type="text" th:field="*{name}" />
         <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color:red"></span>
+        <!-- <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color:red"></div> -->
         <br />
         <label>商品説明</label><br />
         <textarea rows="10" cols="50" th:field="*{description}"></textarea>

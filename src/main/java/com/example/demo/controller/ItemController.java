@@ -7,7 +7,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -67,7 +66,7 @@ public class ItemController {
      * 商品情報を新規登録する
      */
     @RequestMapping(value = "/item/create", method = RequestMethod.POST)
-    public String create(@Validated @ModelAttribute ItemForm itemForm, BindingResult bindingResult, Model model) {
+    public String create(@Validated ItemForm itemForm, BindingResult bindingResult, Model model) {
         Item item = itemConverter.toItem(itemForm);
 
         // バリデーション結果の判定
@@ -76,7 +75,7 @@ public class ItemController {
             return "redirect:/item/index";
         } else {
             // エラーがある場合は、新規登録画面を呼ぶ
-            model.addAttribute(itemForm);
+            // model.addAttribute(itemForm);
             return "/item/new";
         }
     }
