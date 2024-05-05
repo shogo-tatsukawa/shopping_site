@@ -20,8 +20,8 @@ public class ItemConverter {
     private ModelMapper modelMapper = new ModelMapper();
 
     /**
-     * Entity -> Dto
-     * @param items Iterable<Item>
+     * List<Entity> -> List<Dto>
+     * @param items List<Item>
      * @return itemsDto List<ItemDto>
      */
     public List<ItemDto> toDtoList(List<Item> items) {
@@ -31,6 +31,15 @@ public class ItemConverter {
             itemsDto.add(modelMapper.map(item, ItemDto.class));
         }
         return itemsDto;
+    }
+
+    /**
+     * Entity -> Dto
+     * @param item Item
+     * @return itemDto ItemDto
+     */
+    public ItemDto toDto(Item item) {
+        return modelMapper.map(item, ItemDto.class);
     }
 
     /**

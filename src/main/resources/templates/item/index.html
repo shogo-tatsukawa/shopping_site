@@ -20,9 +20,13 @@
             <tr th:each="item : ${items}" th:object="${item}">
                 <td class="item_id" th:text="*{id}"></td>
                 <td class="item_name" th:text="*{name}"></td>
-                <td class="item_action"></td>
+                <td class="item_action">
+                    <a th:href="@{/item/show(id=${item.id})}">詳細を見る</a>
+                </td>
             </tr>
         </tbody>
     </table>
+
+    <p><a th:href="@{/item/new}">新規作成</a></p>
 </body>
 </html>

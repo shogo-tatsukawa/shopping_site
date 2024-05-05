@@ -1,14 +1,17 @@
 package com.example.demo.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.dto.ItemConverter;
 import com.example.demo.dto.ItemDto;
@@ -66,7 +69,7 @@ public class ItemController {
      * 商品情報を新規登録する
      */
     @RequestMapping(value = "/item/create", method = RequestMethod.POST)
-    public String create(@Validated ItemForm itemForm, BindingResult bindingResult, Model model) {
+    public String create(@Validated @ModelAttribute ItemForm itemForm, BindingResult bindingResult, Model model) {
         Item item = itemConverter.toItem(itemForm);
 
         // バリデーション結果の判定
@@ -77,6 +80,29 @@ public class ItemController {
             // エラーがある場合は、新規登録画面を呼ぶ
             // model.addAttribute(itemForm);
             return "/item/new";
+        }
+    }
+
+    /**
+     * 商品情報の詳細を表示する
+     * @param 詳細を表示したい商品情報のid (Long)
+     */
+    @RequestMapping(value="/item/show", method = RequestMethod.GET)
+    public String show(@RequestParam(value="id") Long id, Model model) {
+        if (id == null) {
+            return "/item/index";
+        // idがnullでない場合、idをキーに商品情報取得
+        } else {
+            Optional<Item> itemOpt = itemService.searchOneById(id);
+            // 中身が空でなければデータを取り出す
+            if (itemOpt.isPresent()) {
+                Item item = itemOpt.get();
+                ItemDto itemDto = itemConverter.toDto(item);
+                model.addAttribute("item", itemDto);
+                return "/item/show";
+            } else {
+                return "/item/index";
+            }
         }
     }
 }
