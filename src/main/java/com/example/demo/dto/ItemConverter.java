@@ -43,9 +43,18 @@ public class ItemConverter {
     }
 
     /**
+     * Entity -> Form
+     * @param item Item
+     * @return itemForm ItemForm
+     */
+    public ItemForm toForm(Item item) {
+        return modelMapper.map(item, ItemForm.class);
+    }
+
+    /**
      * Form -> Entity
-     * @param itemForm
-     * @return item
+     * @param itemForm ItemForm
+     * @return item Item
      */
     public Item toItem(ItemForm itemForm) {
         return modelMapper.map(itemForm, Item.class);

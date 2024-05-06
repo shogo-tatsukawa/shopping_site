@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<!-- ヘッダー共通部分 -->
+<head>
+    <meta charset="UTF-8">
+    <!-- 共通部分で読み込むcss -->
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>買い物サイト</title>
+</head>
+<body>
+    <header layout:fragment="header">
+        <div id="header_menu">
+            <h1>買い物サイト</h1>
+        </div>
+    </header>
+    <footer layout:fragment="footer">
+        <div id="footer">by Shogo Tatsukawa</div>
+    </footer>
+</body>
+</html>

@@ -1,11 +1,15 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml"xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
 <meta charset="UTF-8">
-<title>商品情報一覧</title>
+<title>商品情報　一覧ページ</title>
 <link href="/css/list.css" rel="stylesheet"></link>
+<!-- <link th:href="@{/css/style.css}" rel="stylesheet"></link> -->
 </head>
 <body>
+    <header layout:replace="~{item/layout/app::header}"></header>
+    <!-- <header layout:fragment="header">テスト</header> -->
     <h1>商品情報一覧</h1>
     <table id="item_list">
         <thead>
@@ -28,5 +32,7 @@
     </table>
 
     <p><a th:href="@{/item/new}">新規作成</a></p>
+
+    <div layout:replace="~{item/layout/app::footer}"></div>
 </body>
 </html>

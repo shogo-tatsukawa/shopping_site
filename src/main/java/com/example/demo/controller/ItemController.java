@@ -105,4 +105,26 @@ public class ItemController {
             }
         }
     }
+
+    /**
+     * 商品情報の編集画面を表示する
+     * @param 編集したい商品情報のid (Long)
+     */
+    @RequestMapping(value="/item/edit", method=RequestMethod.POST)
+    public String edit(@RequestParam(value="id") Long id, Model model) {
+        if (id == null) {
+            return "/item/index";
+        } else {
+            Optional<Item> itemOpt = itemService.searchOneById(id);
+            // 中身が空でなければデータを取り出す
+            if (itemOpt.isPresent()) {
+                Item item = itemOpt.get();
+                ItemForm itemForm = itemConverter.toForm(item);
+                model.addAttribute("itemForm", itemForm);
+                return "/item/edit";
+            } else {
+                return "/item/index";
+            }
+        }
+    }
 }
