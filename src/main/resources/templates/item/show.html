@@ -33,7 +33,12 @@
         </tbody>
     </table>
 
-    <p><a th:href="@{/item/index}">一覧に戻る</a></p>
-    <p><a th:href="@{/item/edit(id=${item.id})">編集する</a></p>
+    <p>
+        <a th:href="@{/item/index}">一覧に戻る</a>
+    </p>
+
+    <p>
+        <a th:href="@{/item/edit(id=${item.id})}">編集する</a>
+    </p>
 </body>
 </html>

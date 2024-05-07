@@ -49,10 +49,16 @@ public class ItemService implements ServiceBase{
 
          // idがnullでない場合、更新のため、更新日時に現在時刻を設定する
         } else {
+
+            // idを条件に登録済みの商品情報を検索
+            Optional<Item> itemCopyOpt = itemRepository.findById(item.getId());
+
+            Item itemCopy = itemCopyOpt.get();
+            // 元の商品情報からitem（編集先）に作成日時をコピーする
+            item.setCreatedAt(itemCopy.getCreatedAt());
+            // 更新日時は現在の時刻を設定する
             item.setUpdatedAt(now);
-
         }
-
         itemRepository.save(item);
     }
 

@@ -75,6 +75,7 @@ public class ItemController {
         // バリデーション結果の判定
         if (!bindingResult.hasErrors()) {
             itemService.insertItem(item);
+            // indexにリダイレクト
             return "redirect:/item/index";
         } else {
             // エラーがある場合は、新規登録画面を呼ぶ
@@ -110,7 +111,7 @@ public class ItemController {
      * 商品情報の編集画面を表示する
      * @param 編集したい商品情報のid (Long)
      */
-    @RequestMapping(value="/item/edit", method=RequestMethod.POST)
+    @RequestMapping(value="/item/edit", method=RequestMethod.GET)
     public String edit(@RequestParam(value="id") Long id, Model model) {
         if (id == null) {
             return "/item/index";
@@ -125,6 +126,25 @@ public class ItemController {
             } else {
                 return "/item/index";
             }
+        }
+    }
+
+    /**
+     * 商品情報の更新をする
+     */
+    @RequestMapping(value = "/item/update", method = RequestMethod.POST)
+    public String update(@Validated @ModelAttribute ItemForm itemForm, BindingResult bindingResult, Model model) {
+        Item item = itemConverter.toItem(itemForm);
+
+        // バリデーション結果の判定
+        if (!bindingResult.hasErrors()) {
+            itemService.insertItem(item);
+            // indexにリダイレクト
+            return "redirect:/item/index";
+        } else {
+            // エラーがある場合は、編集画面を呼ぶ
+            // model.addAttribute(itemForm);
+            return "/item/edit";
         }
     }
 }
