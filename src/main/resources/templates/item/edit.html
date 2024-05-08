@@ -11,7 +11,24 @@
         <div layout:replace="~{item/_form::form}"></div>
     </form>
 
-    <p><a th:href="@{/item/index}">一覧に戻る</a></p>
+    <p>
+        <a href="#" onclick="confirmDestroy();">この商品情報を削除する</a>
+    </p>
+
+    <form method="post" th:action="@{/item/destroy(id=${itemForm.id})}">
+    </form>
+
+    <script>
+        function confirmDestroy() {
+            if (confirm("本当に削除してよろしいですか？")) {
+                document.forms[1].submit();
+            }
+        }
+    </script>
+
+    <p>
+        <a th:href="@{/item/index}">一覧に戻る</a>
+    </p>
 
     <div layout:replace="~{item/layout/app::footer}"></div>
 </body>

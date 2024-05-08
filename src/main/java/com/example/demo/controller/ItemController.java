@@ -147,4 +147,15 @@ public class ItemController {
             return "/item/edit";
         }
     }
+
+    /**
+     * 商品情報を論理削除する
+     */
+    @RequestMapping(value = "/item/destroy", method = RequestMethod.POST)
+    public String destroy(@RequestParam(value="id") Long id) {
+        // idを条件に商品情報を論理削除する
+        itemService.destroy(id);
+
+        return "redirect:/item/index";
+    }
 }

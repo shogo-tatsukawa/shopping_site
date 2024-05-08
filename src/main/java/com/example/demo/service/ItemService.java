@@ -43,23 +43,42 @@ public class ItemService implements ServiceBase{
         LocalDateTime now = LocalDateTime.now();
 
         // idがnullの場合、新規作成のため、登録日時と更新日時に現在時刻を設定する
+        // 削除フラグにfalseを設定
         if (item.getId() == null) {
             item.setCreatedAt(now);
             item.setUpdatedAt(now);
+            item.setDeleteFlag(false);
 
          // idがnullでない場合、更新のため、更新日時に現在時刻を設定する
         } else {
 
             // idを条件に登録済みの商品情報を検索
-            Optional<Item> itemCopyOpt = itemRepository.findById(item.getId());
+            Optional<Item> itemCopyOpt = searchOneById(item.getId());
 
             Item itemCopy = itemCopyOpt.get();
-            // 元の商品情報からitem（編集先）に作成日時をコピーする
+            // 元の商品情報からitem（編集先）に作成日時と削除フラグをコピーする
             item.setCreatedAt(itemCopy.getCreatedAt());
+            item.setDeleteFlag(itemCopy.getDeleteFlag());
             // 更新日時は現在の時刻を設定する
             item.setUpdatedAt(now);
         }
         itemRepository.save(item);
+    }
+
+    @Override
+    public void destroy(Long id) {
+        // idを条件に登録済みの商品情報を検索
+        Optional<Item> itemOpt = searchOneById(id);
+
+        Item item = itemOpt.get();
+
+        // 更新日時に現在時刻を設定する
+        LocalDateTime now = LocalDateTime.now();
+        item.setUpdatedAt(now);
+
+        // 論理削除フラグを立てる
+        item.setDeleteFlag(true);
+
     }
 
 }

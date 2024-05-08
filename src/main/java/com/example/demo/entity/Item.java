@@ -52,4 +52,10 @@ public class Item {
      */
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
+
+    /**
+     * 削除されたかどうか
+     */
+    @Column(name = "delete_flag", nullable = false)
+    private Boolean deleteFlag;
 }

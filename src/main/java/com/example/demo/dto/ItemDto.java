@@ -34,4 +34,9 @@ public class ItemDto {
      * 更新日時
      */
     private LocalDateTime updatedAt;
+
+    /**
+     * 削除されたかどうか
+     */
+    private Boolean deleteFlag;
 }

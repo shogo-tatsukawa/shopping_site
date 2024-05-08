@@ -31,4 +31,10 @@ public interface ServiceBase {
      * @param item Item
      */
     public abstract void insertItem(Item item);
+
+    /**
+     * idをキーにして商品情報を論理削除する
+     * @param id Long
+     */
+    public abstract void destroy(Long id);
 }

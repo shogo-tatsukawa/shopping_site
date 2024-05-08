@@ -25,7 +25,12 @@
                 <td class="item_id" th:text="*{id}"></td>
                 <td class="item_name" th:text="*{name}"></td>
                 <td class="item_action">
-                    <a th:href="@{/item/show(id=${item.id})}">詳細を見る</a>
+                    <th:block th:if="*{deleteFlag}">
+                        (削除済み)
+                    </th:block>
+                    <th:block th:unless="*{deleteFlag}">
+                        <a th:href="@{/item/show(id=${item.id})}">詳細を見る</a>
+                    </th:block>
                 </td>
             </tr>
         </tbody>
