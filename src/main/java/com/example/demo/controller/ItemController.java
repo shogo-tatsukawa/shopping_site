@@ -18,6 +18,8 @@ import com.example.demo.dto.ItemDto;
 import com.example.demo.dto.ItemForm;
 import com.example.demo.entity.Item;
 import com.example.demo.service.ItemService;
+
+import jakarta.servlet.http.HttpServletRequest;
 /**
  *
  * @author S.Tatsukawa
@@ -26,6 +28,8 @@ import com.example.demo.service.ItemService;
  */
 @Controller
 public class ItemController {
+    @Autowired
+    HttpServletRequest request;
     /**
      * 商品情報 Service
      */
@@ -60,7 +64,12 @@ public class ItemController {
     @RequestMapping(value = "/item/new", method = RequestMethod.GET)
     public String entryNew(Model model) {
         //ItemDto itemDto = new ItemDto();
+        // 空のItemFormをModelに設定
         model.addAttribute("itemForm", new ItemForm());
+
+        // CSRF対策用トークンをModelに設定
+        String token = request.getSession().getId();
+        model.addAttribute("token", token);
 
         return "item/new";
     }
@@ -69,7 +78,15 @@ public class ItemController {
      * 商品情報を新規登録する
      */
     @RequestMapping(value = "/item/create", method = RequestMethod.POST)
-    public String create(@Validated @ModelAttribute ItemForm itemForm, BindingResult bindingResult, Model model) {
+    public String create(@ModelAttribute("token") String token,
+                          @Validated @ModelAttribute ItemForm itemForm,
+                          BindingResult bindingResult, Model model) {
+        // CSRF対策 tokenのチェック
+        if (token == null || !(token.equals(request.getSession().getId()))) {
+            // +++++ エラー画面に変更++++++++++++++++++++++++++++
+            return "/item/new";
+        }
+
         Item item = itemConverter.toItem(itemForm);
 
         // バリデーション結果の判定
@@ -90,21 +107,20 @@ public class ItemController {
      */
     @RequestMapping(value="/item/show", method = RequestMethod.GET)
     public String show(@RequestParam(value="id") Long id, Model model) {
-        if (id == null) {
-            return "/item/index";
-        // idがnullでない場合、idをキーに商品情報取得
-        } else {
-            Optional<Item> itemOpt = itemService.searchOneById(id);
-            // 中身が空でなければデータを取り出す
-            if (itemOpt.isPresent()) {
-                Item item = itemOpt.get();
-                ItemDto itemDto = itemConverter.toDto(item);
-                model.addAttribute("item", itemDto);
-                return "/item/show";
-            } else {
-                return "/item/index";
-            }
-        }
+         // idを条件に商品情報を取得する
+         Optional<Item> itemOpt = itemService.searchOneById(id);
+         // 中身が空でないかつ論理削除されていなければデータを取り出す
+         if (itemOpt.isPresent() && itemOpt.get().getDeleteFlag() == false) {
+             Item item = itemOpt.get();
+             ItemDto itemDto = itemConverter.toDto(item);
+             model.addAttribute("item", itemDto);
+             return "/item/show";
+
+         // 中身がからもしくは論理削除されている場合、エラー画面を表示
+         } else {
+             // ++++++++++++エラー画面に変更++++++++++++++++++++++++
+             return "/item/index";
+         }
     }
 
     /**
@@ -113,19 +129,22 @@ public class ItemController {
      */
     @RequestMapping(value="/item/edit", method=RequestMethod.GET)
     public String edit(@RequestParam(value="id") Long id, Model model) {
-        if (id == null) {
-            return "/item/index";
+        // idを条件に商品情報を取得する
+        Optional<Item> itemOpt = itemService.searchOneById(id);
+       // 中身が空でないかつ論理削除されていなければデータを取り出す
+        if (itemOpt.isPresent() && itemOpt.get().getDeleteFlag() == false) {
+            Item item = itemOpt.get();
+            ItemForm itemForm = itemConverter.toForm(item);
+            // CSRF対策用トークンをModelに設定
+            String token = request.getSession().getId();
+            model.addAttribute("token", token);
+            model.addAttribute("itemForm", itemForm);
+            return "/item/edit";
+
+        // 中身がからもしくは論理削除されている場合、エラー画面を表示
         } else {
-            Optional<Item> itemOpt = itemService.searchOneById(id);
-            // 中身が空でなければデータを取り出す
-            if (itemOpt.isPresent()) {
-                Item item = itemOpt.get();
-                ItemForm itemForm = itemConverter.toForm(item);
-                model.addAttribute("itemForm", itemForm);
-                return "/item/edit";
-            } else {
-                return "/item/index";
-            }
+            // ++++++++++++エラー画面に変更++++++++++++++++++++++++
+            return "/item/index";
         }
     }
 
@@ -133,7 +152,15 @@ public class ItemController {
      * 商品情報の更新をする
      */
     @RequestMapping(value = "/item/update", method = RequestMethod.POST)
-    public String update(@Validated @ModelAttribute ItemForm itemForm, BindingResult bindingResult, Model model) {
+    public String update(@ModelAttribute("token") String token,
+                          @Validated @ModelAttribute ItemForm itemForm,
+                          BindingResult bindingResult, Model model) {
+        // CSRF対策 tokenのチェック
+        if (token == null || !(token.equals(request.getSession().getId()))) {
+            // +++++ エラー画面に変更++++++++++++++++++++++++++++
+            return "/item/new";
+        }
+
         Item item = itemConverter.toItem(itemForm);
 
         // バリデーション結果の判定
@@ -158,4 +185,5 @@ public class ItemController {
 
         return "redirect:/item/index";
     }
+
 }

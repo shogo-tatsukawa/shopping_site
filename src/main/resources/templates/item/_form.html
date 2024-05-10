@@ -17,6 +17,7 @@
         <div th:if="${#fields.hasErrors('description')}" th:errors="*{description}" style="color:red"></div>
         <br /><br />
         <input type="hidden" th:field="*{id}" />
+        <input type="hidden" th:value="${token}" name="token"/>
         <button type="submit">登録</button>
     </div>
 </body>

@@ -15,7 +15,8 @@
         <a href="#" onclick="confirmDestroy();">この商品情報を削除する</a>
     </p>
 
-    <form method="post" th:action="@{/item/destroy(id=${itemForm.id})}">
+    <form method="post" th:action="@{/item/destroy}">
+        <input type="hidden" th:value="${itemForm.id}" name="id" />
     </form>
 
     <script>
