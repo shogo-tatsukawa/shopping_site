@@ -1,10 +1,10 @@
 package com.example.demo.service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +18,7 @@ import com.example.demo.repository.ItemRepository;
  */
 @Service
 @Transactional
+@EnableJpaAuditing
 public class ItemService implements ServiceBase{
 // public class ItemService {
     /**
@@ -40,27 +41,20 @@ public class ItemService implements ServiceBase{
 
     @Override
     public void insertItem(Item item) {
-        LocalDateTime now = LocalDateTime.now();
-
-        // idがnullの場合、新規作成のため、登録日時と更新日時に現在時刻を設定する
+        // idがnullの場合、新規作成のため、削除フラグを初期値（false）に設定する
         // 削除フラグにfalseを設定
         if (item.getId() == null) {
-            item.setCreatedAt(now);
-            item.setUpdatedAt(now);
             item.setDeleteFlag(false);
 
-         // idがnullでない場合、更新のため、更新日時に現在時刻を設定する
+         // idがnullでない場合、更新のため、削除フラグをコピーする
         } else {
 
             // idを条件に登録済みの商品情報を検索
             Optional<Item> itemCopyOpt = searchOneById(item.getId());
 
             Item itemCopy = itemCopyOpt.get();
-            // 元の商品情報からitem（編集先）に作成日時と削除フラグをコピーする
-            item.setCreatedAt(itemCopy.getCreatedAt());
+            // 元の商品情報からitem（編集先）に削除フラグをコピーする
             item.setDeleteFlag(itemCopy.getDeleteFlag());
-            // 更新日時は現在の時刻を設定する
-            item.setUpdatedAt(now);
         }
         itemRepository.save(item);
     }
@@ -71,10 +65,6 @@ public class ItemService implements ServiceBase{
         Optional<Item> itemOpt = searchOneById(id);
 
         Item item = itemOpt.get();
-
-        // 更新日時に現在時刻を設定する
-        LocalDateTime now = LocalDateTime.now();
-        item.setUpdatedAt(now);
 
         // 論理削除フラグを立てる
         item.setDeleteFlag(true);
