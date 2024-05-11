@@ -1,12 +1,17 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
 <meta charset="UTF-8">
 <title>商品情報　詳細ページ</title>
-<link href="/css/list.css" rel="stylesheet"></link>
+<link rel="stylesheet" th:href="@{/css/list.css}"></link>
+<link rel="stylesheet" th:href="@{/css/reset.css}">
+<link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-    <h1>商品名：[[${item.name}]]の詳細ページ</h1>
+    <header layout:replace="~{/item/layout/app::header}"></header>
+    <hr>
+    <h1 th:text="'商品名：'+${item.name}+' の詳細ページ'"></h1>
 
     <table>
         <tbody th:object="${item}">
@@ -40,5 +45,7 @@
     <p>
         <a th:href="@{/item/edit(id=${item.id})}">編集する</a>
     </p>
+
+    <footer layout:replace="~{item/layout/app::footer}"></footer>
 </body>
 </html>

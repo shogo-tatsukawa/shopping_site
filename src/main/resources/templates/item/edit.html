@@ -1,12 +1,16 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"xmlns:th="http://www.thymeleaf.org"
+<html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
 <meta charset="UTF-8">
 <title>商品登録情報の編集ページ</title>
+<link rel="stylesheet" th:href="@{/css/list.css}"></link>
+<link rel="stylesheet" th:href="@{/css/reset.css}">
+<link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
     <header layout:replace="~{item/layout/app::header}"></header>
+
     <form method="post" th:action="@{/item/update}" th:object="${itemForm}">
         <div layout:replace="~{item/_form::form}"></div>
     </form>
@@ -31,6 +35,6 @@
         <a th:href="@{/item/index}">一覧に戻る</a>
     </p>
 
-    <div layout:replace="~{item/layout/app::footer}"></div>
+    <footer layout:replace="~{item/layout/app::footer}"></footer>
 </body>
 </html>

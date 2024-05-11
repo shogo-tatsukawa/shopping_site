@@ -28,7 +28,6 @@ public class ItemService implements ServiceBase{
     ItemRepository itemRepository;
 
     @Override
-    // public Iterable<Item> searchAll() {
     public List<Item> searchAll() {
         // Item Tableの内容を全検索
         return itemRepository.findAll();
@@ -41,14 +40,13 @@ public class ItemService implements ServiceBase{
 
     @Override
     public void insertItem(Item item) {
-        // idがnullの場合、新規作成のため、削除フラグを初期値（false）に設定する
-        // 削除フラグにfalseを設定
+        // idの有無を確認
         if (item.getId() == null) {
+            // nullの場合、新規作成のため削除フラグを初期値（false）に設定する
             item.setDeleteFlag(false);
 
-         // idがnullでない場合、更新のため、削除フラグをコピーする
         } else {
-
+            // idがnullでない場合、更新のため削除フラグをコピーする
             // idを条件に登録済みの商品情報を検索
             Optional<Item> itemCopyOpt = searchOneById(item.getId());
 
@@ -56,6 +54,7 @@ public class ItemService implements ServiceBase{
             // 元の商品情報からitem（編集先）に削除フラグをコピーする
             item.setDeleteFlag(itemCopy.getDeleteFlag());
         }
+        // 商品情報を登録する
         itemRepository.save(item);
     }
 
@@ -68,7 +67,6 @@ public class ItemService implements ServiceBase{
 
         // 論理削除フラグを立てる
         item.setDeleteFlag(true);
-
     }
 
 }

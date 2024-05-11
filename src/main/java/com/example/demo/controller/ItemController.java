@@ -45,14 +45,17 @@ public class ItemController {
     /**
      * 商品情報一覧画面を表示
      * @param model Model
-     * @return 商品情報の一覧画面のHTML
+     * @return 商品情報の一覧画面
      */
     @RequestMapping(value = "/item/index", method = RequestMethod.GET)
     public String index(Model model) {
+        // すべての商品情報を取得
         List<Item> items = itemService.searchAll();
 
+        // DTOに変換
         List<ItemDto> itemsDto = itemConverter.toDtoList(items);
 
+        // modelに格納
         model.addAttribute("items", itemsDto);
 
         return "item/index";
@@ -60,14 +63,15 @@ public class ItemController {
 
     /**
      * 新規登録画面を表示する
+     * @param model Model
+     * @return 新規登録画面
      */
     @RequestMapping(value = "/item/new", method = RequestMethod.GET)
     public String entryNew(Model model) {
-        //ItemDto itemDto = new ItemDto();
-        // 空のItemFormをModelに設定
+        // 空のItemFormをmodelに格納
         model.addAttribute("itemForm", new ItemForm());
 
-        // CSRF対策用トークンをModelに設定
+        // CSRF対策用トークンをmodelに格納
         String token = request.getSession().getId();
         model.addAttribute("token", token);
 
@@ -76,6 +80,11 @@ public class ItemController {
 
     /**
      * 商品情報を新規登録する
+     * @param token String トークン(CSRF対策用)
+     * @param itemForm ItemForm 商品情報のForm
+     * @param bindingResult BindingResult Formのバリデーション結果
+     * @param model Model
+     * @return 商品情報の一覧画面
      */
     @RequestMapping(value = "/item/create", method = RequestMethod.POST)
     public String create(@ModelAttribute("token") String token,
@@ -83,73 +92,91 @@ public class ItemController {
                           BindingResult bindingResult, Model model) {
         // CSRF対策 tokenのチェック
         if (token == null || !(token.equals(request.getSession().getId()))) {
-            // +++++ エラー画面に変更++++++++++++++++++++++++++++
-            return "/item/new";
-        }
-
-        Item item = itemConverter.toItem(itemForm);
-
-        // バリデーション結果の判定
-        if (!bindingResult.hasErrors()) {
-            itemService.insertItem(item);
-            // indexにリダイレクト
-            return "redirect:/item/index";
+            // エラーの場合、エラー画面に遷移
+            return "/item/error/unknown";
         } else {
-            // エラーがある場合は、新規登録画面を呼ぶ
-            // model.addAttribute(itemForm);
-            return "/item/new";
+            // Itemに変換
+            Item item = itemConverter.toItem(itemForm);
+
+            // バリデーション結果の判定
+            if (!bindingResult.hasErrors()) {
+                // エラーがない場合は、商品情報を登録
+                itemService.insertItem(item);
+                // 商品情報一覧画面にリダイレクト
+                return "redirect:/item/index";
+            } else {
+                // エラーがある場合は、新規登録画面を呼ぶ
+                return "/item/new";
+            }
         }
     }
 
     /**
      * 商品情報の詳細を表示する
-     * @param 詳細を表示したい商品情報のid (Long)
+     * @param id Long 詳細を表示したい商品情報のid
+     * @param model Model
+     * @return 商品情報の詳細画面
      */
     @RequestMapping(value="/item/show", method = RequestMethod.GET)
     public String show(@RequestParam(value="id") Long id, Model model) {
          // idを条件に商品情報を取得する
          Optional<Item> itemOpt = itemService.searchOneById(id);
-         // 中身が空でないかつ論理削除されていなければデータを取り出す
+
+         // 取得したデータの確認
          if (itemOpt.isPresent() && itemOpt.get().getDeleteFlag() == false) {
+             // 中身が空でないかつ論理削除されていなければデータを取り出す
              Item item = itemOpt.get();
+             // DTOに変換
              ItemDto itemDto = itemConverter.toDto(item);
+             // modelに格納
              model.addAttribute("item", itemDto);
+             // 商品情報の詳細画面を表示
              return "/item/show";
 
-         // 中身がからもしくは論理削除されている場合、エラー画面を表示
          } else {
-             // ++++++++++++エラー画面に変更++++++++++++++++++++++++
-             return "/item/index";
+             // 中身が空もしくは論理削除されている場合、エラー画面を表示
+             return "/item/error/unknown";
          }
     }
 
     /**
      * 商品情報の編集画面を表示する
-     * @param 編集したい商品情報のid (Long)
+     * @param id Long 編集したい商品情報のid
+     * @param model Model
+     * @return 商品情報の編集画面
      */
     @RequestMapping(value="/item/edit", method=RequestMethod.GET)
     public String edit(@RequestParam(value="id") Long id, Model model) {
         // idを条件に商品情報を取得する
         Optional<Item> itemOpt = itemService.searchOneById(id);
-       // 中身が空でないかつ論理削除されていなければデータを取り出す
+
+        // 取得したデータの確認
         if (itemOpt.isPresent() && itemOpt.get().getDeleteFlag() == false) {
+            // 中身が空でないかつ論理削除されていなければデータを取り出す
             Item item = itemOpt.get();
+            // ItemFormに変換
             ItemForm itemForm = itemConverter.toForm(item);
+            // itemFormをmodelに格納
+            model.addAttribute("itemForm", itemForm);
             // CSRF対策用トークンをModelに設定
             String token = request.getSession().getId();
             model.addAttribute("token", token);
-            model.addAttribute("itemForm", itemForm);
+            // 商品情報の編集画面に遷移
             return "/item/edit";
 
-        // 中身がからもしくは論理削除されている場合、エラー画面を表示
         } else {
-            // ++++++++++++エラー画面に変更++++++++++++++++++++++++
-            return "/item/index";
+            // 中身がからもしくは論理削除されている場合、エラー画面を表示
+            return "/item/error/unknown";
         }
     }
 
     /**
      * 商品情報の更新をする
+     * @param token String トークン(CSRF対策用)
+     * @param itemForm ItemForm 商品情報のForm
+     * @param bindingResult BindingResult Formのバリデーション結果
+     * @param model Model
+     * @return 商品情報の一覧画面
      */
     @RequestMapping(value = "/item/update", method = RequestMethod.POST)
     public String update(@ModelAttribute("token") String token,
@@ -157,26 +184,29 @@ public class ItemController {
                           BindingResult bindingResult, Model model) {
         // CSRF対策 tokenのチェック
         if (token == null || !(token.equals(request.getSession().getId()))) {
-            // +++++ エラー画面に変更++++++++++++++++++++++++++++
-            return "/item/new";
-        }
-
-        Item item = itemConverter.toItem(itemForm);
-
-        // バリデーション結果の判定
-        if (!bindingResult.hasErrors()) {
-            itemService.insertItem(item);
-            // indexにリダイレクト
-            return "redirect:/item/index";
+            // エラーの場合、エラー画面に遷移
+            return "/item/error/unknown";
         } else {
-            // エラーがある場合は、編集画面を呼ぶ
-            // model.addAttribute(itemForm);
-            return "/item/edit";
+            // Itemに変換
+            Item item = itemConverter.toItem(itemForm);
+
+            // バリデーション結果の判定
+            if (!bindingResult.hasErrors()) {
+                // エラーがない場合は、商品情報を登録
+                itemService.insertItem(item);
+                // 商品情報の一覧画面にリダイレクト
+                return "redirect:/item/index";
+            } else {
+                // エラーがある場合は、編集画面を呼ぶ
+                return "/item/edit";
+            }
         }
     }
 
     /**
      * 商品情報を論理削除する
+     * @param id Long 論理削除したい商品情報のid
+     * @return 商品情報の一覧画面
      */
     @RequestMapping(value = "/item/destroy", method = RequestMethod.POST)
     public String destroy(@RequestParam(value="id") Long id) {

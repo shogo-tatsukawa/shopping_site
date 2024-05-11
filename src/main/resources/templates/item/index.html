@@ -10,6 +10,7 @@
 </head>
 <body>
     <header layout:replace="~{/item/layout/app::header}"></header>
+    <hr>
     <h1>商品情報一覧</h1>
     <table id="item_list">
         <thead>
@@ -37,6 +38,6 @@
 
     <p><a th:href="@{/item/new}">新規作成</a></p>
 
-    <div layout:replace="~{item/layout/app::footer}"></div>
+    <footer layout:replace="~{item/layout/app::footer}"></footer>
 </body>
 </html>

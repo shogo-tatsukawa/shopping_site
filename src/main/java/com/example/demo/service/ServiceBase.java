@@ -14,27 +14,26 @@ public interface ServiceBase {
 
     /**
      * テーブル中のレコードを全件取得
-     * @return 全件のレコード（Iterable型）
+     * @return List<Item> 全件のレコード
      */
-    // public Iterable<Item> searchAll();
     public abstract List<Item> searchAll();
 
     /**
      * idをキーにしてレコードを1件取得する
-     * @param id Long
-     * @return 1件のレコード（Optional型）
+     * @param id Long 取得したいレコードのid
+     * @return Optional<Item> 1件のレコード
      */
     public abstract Optional<Item> searchOneById(Long id);
 
     /**
      * 取得したデータをDBにInsertする
-     * @param item Item
+     * @param item Item 登録したい商品情報
      */
     public abstract void insertItem(Item item);
 
     /**
      * idをキーにして商品情報を論理削除する
-     * @param id Long
+     * @param id Long 論理削除したいレコードのid
      */
     public abstract void destroy(Long id);
 }
