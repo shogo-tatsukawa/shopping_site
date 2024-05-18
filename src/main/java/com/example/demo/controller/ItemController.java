@@ -28,8 +28,8 @@ import jakarta.servlet.http.HttpServletRequest;
  */
 @Controller
 public class ItemController {
-    @Autowired
-    HttpServletRequest request;
+    //@Autowired
+    //HttpServletRequest request;
     /**
      * 商品情報 Service
      */
@@ -67,7 +67,7 @@ public class ItemController {
      * @return 新規登録画面
      */
     @RequestMapping(value = "/item/new", method = RequestMethod.GET)
-    public String entryNew(Model model) {
+    public String entryNew(Model model, HttpServletRequest request) {
         // 空のItemFormをmodelに格納
         model.addAttribute("itemForm", new ItemForm());
 
@@ -89,7 +89,8 @@ public class ItemController {
     @RequestMapping(value = "/item/create", method = RequestMethod.POST)
     public String create(@ModelAttribute("token") String token,
                           @Validated @ModelAttribute ItemForm itemForm,
-                          BindingResult bindingResult, Model model) {
+                          BindingResult bindingResult, Model model,
+                          HttpServletRequest request) {
         // CSRF対策 tokenのチェック
         if (token == null || !(token.equals(request.getSession().getId()))) {
             // エラーの場合、エラー画面に遷移
@@ -146,7 +147,7 @@ public class ItemController {
      * @return 商品情報の編集画面
      */
     @RequestMapping(value="/item/edit", method=RequestMethod.GET)
-    public String edit(@RequestParam(value="id") Long id, Model model) {
+    public String edit(@RequestParam(value="id") Long id, Model model, HttpServletRequest request) {
         // idを条件に商品情報を取得する
         Optional<Item> itemOpt = itemService.searchOneById(id);
 
@@ -181,7 +182,8 @@ public class ItemController {
     @RequestMapping(value = "/item/update", method = RequestMethod.POST)
     public String update(@ModelAttribute("token") String token,
                           @Validated @ModelAttribute ItemForm itemForm,
-                          BindingResult bindingResult, Model model) {
+                          BindingResult bindingResult, Model model,
+                          HttpServletRequest request) {
         // CSRF対策 tokenのチェック
         if (token == null || !(token.equals(request.getSession().getId()))) {
             // エラーの場合、エラー画面に遷移
