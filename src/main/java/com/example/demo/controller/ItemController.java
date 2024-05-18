@@ -32,15 +32,19 @@ public class ItemController {
     //HttpServletRequest request;
     /**
      * 商品情報 Service
-     */
-    @Autowired
-    ItemService itemService;
-
-    /**
      * 商品情報 Converter
      */
+    private final ItemService itemService;
+    private final ItemConverter itemConverter;
+
+    /*
+     * コンストラクタインジェクションでDI
+     */
     @Autowired
-    ItemConverter itemConverter;
+    public ItemController(ItemService itemService, ItemConverter itemConverter) {
+        this.itemService = itemService;
+        this.itemConverter = itemConverter;
+    }
 
     /**
      * 商品情報一覧画面を表示

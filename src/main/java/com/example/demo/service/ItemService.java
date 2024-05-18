@@ -23,9 +23,14 @@ public class ItemService implements ServiceBase{
 // public class ItemService {
     /**
      * 商品情報 Repository
+     * コンストラクタインジェクションでDI
      */
+    private final ItemRepository itemRepository;
+
     @Autowired
-    ItemRepository itemRepository;
+    public ItemService(ItemRepository itemRepository) {
+        this.itemRepository = itemRepository;
+    }
 
     @Override
     public List<Item> searchAll() {
