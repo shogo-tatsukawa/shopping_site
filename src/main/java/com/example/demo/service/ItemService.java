@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,7 +17,6 @@ import com.example.demo.repository.ItemRepository;
  */
 @Service
 @Transactional
-@EnableJpaAuditing
 public class ItemService implements ServiceBase{
 // public class ItemService {
     /**
