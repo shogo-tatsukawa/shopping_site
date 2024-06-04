@@ -97,7 +97,7 @@ public class ItemController {
                           HttpServletRequest request) {
         // CSRF対策 tokenのチェック
         if (token == null || !(token.equals(request.getSession().getId()))) {
-            // エラーの場合、エラー画面に遷移
+            // エラーの場合、エラー画面を表示
             return "/item/error/unknown";
         } else {
             // Itemに変換

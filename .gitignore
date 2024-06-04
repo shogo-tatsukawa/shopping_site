@@ -56,6 +56,3 @@ build/
 # OS Files
 Thumbs.db
 .DS_Store
-
-# Application Properties
-src/main/resources/application.properties
